@@ -26,17 +26,18 @@ public class ExampleWebServiceModel extends AbstractModel {
     private static final String TAG = "ExampleWebServiceModel";
 
     private static final String GET_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
-    private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/";
+    private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
 
 
     private MutableLiveData<JSONObject> jsonData;
+    private String message;
 
     private String outputText;
-    private static final String USERNAME = "Austin Ogletree: ";
-    private String MESSAGE;
+    private static final String USERNAME = "Austin Ogletree";
+    //private String MESSAGE;
 
     private final ExecutorService requestThreadExecutor;
-    private final Runnable httpGetRequestThread, httpPostRequestThread, httpClearRequestThread;
+    private final Runnable httpGetRequestThread, httpPostRequestThread, httpDeleteRequestThread;
     private Future<?> pending;
 
     public ExampleWebServiceModel() {
@@ -83,7 +84,7 @@ public class ExampleWebServiceModel extends AbstractModel {
 
         };
 
-        httpClearRequestThread = new Runnable() {
+        httpDeleteRequestThread = new Runnable() {
 
             @Override
             public void run() {
@@ -95,7 +96,7 @@ public class ExampleWebServiceModel extends AbstractModel {
                 /* Begin new request now, but don't wait for it */
 
                 try {
-                    pending = requestThreadExecutor.submit(new HTTPRequestTask("CLEAR", POST_URL));
+                    pending = requestThreadExecutor.submit(new HTTPRequestTask("DELETE", POST_URL));
                 }
                 catch (Exception e) { Log.e(TAG, " Exception: ", e); }
 
@@ -139,7 +140,16 @@ public class ExampleWebServiceModel extends AbstractModel {
     // Start POST Request (called from Controller)
 
     public void sendPostRequest(String message) {
+
+        setMessage(message);
         httpPostRequestThread.run();
+
+    }
+
+    public void sendDeleteRequest() {
+
+        httpDeleteRequestThread.run();
+
     }
 
     // Setter / Getter Methods for JSON LiveData
@@ -157,6 +167,17 @@ public class ExampleWebServiceModel extends AbstractModel {
             jsonData = new MutableLiveData<>();
         }
         return jsonData;
+    }
+
+    private void setMessage(String message) {
+
+        this.message = message;
+
+    }
+
+    public String getMessage() {
+
+        return message;
     }
 
     // Private Class for HTTP Request Threads
@@ -215,20 +236,25 @@ public class ExampleWebServiceModel extends AbstractModel {
                     conn.setDoOutput(true);
 
                     // Create request parameters (these will be echoed back by the example API)
-                    DefaultController dc = new DefaultController();
-                    MESSAGE = USERNAME + dc.getMessage();
+                    //DefaultController dc = new DefaultController();
+                    //MESSAGE = USERNAME + dc.getMessage();
 
+                    JSONObject json = new JSONObject();
+                    json.put("message", message);
+                    json.put("name", USERNAME);
+
+                    Log.i(TAG, json.toString());
 
                     // Write parameters to request body
 
                     OutputStream out = conn.getOutputStream();
-                    out.write(MESSAGE.getBytes());
+                    out.write(json.toString().getBytes());
                     out.flush();
                     out.close();
 
                 }
 
-                if (method.equals("CLEAR") ) {
+                if (method.equals("DELETE") ) {
 
                     conn.setRequestMethod("DELETE");
                     int responseCode = conn.getResponseCode();
@@ -268,6 +294,8 @@ public class ExampleWebServiceModel extends AbstractModel {
                     throw new InterruptedException();
 
                 /* Parse Response as JSON */
+
+                Log.i(TAG, r.toString());
 
                 results = new JSONObject(r.toString());
 

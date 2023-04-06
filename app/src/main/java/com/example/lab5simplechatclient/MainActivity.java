@@ -9,6 +9,8 @@ import java.beans.PropertyChangeEvent;
 
 import com.example.lab5simplechatclient.databinding.ActivityMainBinding;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity implements AbstractView {
 
     public static final String TAG = "MainActivity";
@@ -43,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             @Override
             public void onClick(View view) {
                 String message = binding.inputField.getText().toString();
-                controller.setMessage(message);
-                controller.sendPostRequest();
+                //controller.setMessage(message);
+                controller.sendPostRequest(message);
 
             }
         });
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         binding.clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controller.sendPostRequest();
+                controller.sendClearRequest();
             }
         });
 
@@ -71,7 +73,15 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             String oldPropertyValue = binding.textView.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.textView.setText(propertyValue);
+                String messagelog = "";
+                try {
+                    JSONObject json = new JSONObject(propertyValue);
+                    messagelog = json.get("messages").toString();
+                }
+                catch (Exception e) {
+                    messagelog = "ERROR!";
+                }
+                binding.textView.setText(messagelog);
             }
 
         }
