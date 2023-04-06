@@ -10,7 +10,7 @@ public class DefaultModel extends AbstractModel {
 
     public void initDefault() {
 
-        setOutputText("Click the button to send an HTTP GET request ...");
+        setOutputText("Testing initDefault");
 
     }
 

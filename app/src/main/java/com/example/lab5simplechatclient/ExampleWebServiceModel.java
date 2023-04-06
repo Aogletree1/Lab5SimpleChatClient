@@ -18,9 +18,9 @@ import java.util.concurrent.Future;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class WebServiceModel extends AbstractModel {
+public class ExampleWebServiceModel extends AbstractModel {
 
-    private static final String TAG = "WebServiceModel";
+    private static final String TAG = "ExampleWebServiceModel";
 
     private static final String GET_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/";
     private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
@@ -36,7 +36,7 @@ public class WebServiceModel extends AbstractModel {
     private final Runnable httpGetRequestThread, httpPostRequestThread;
     private Future<?> pending;
 
-    public WebServiceModel() {
+    public ExampleWebServiceModel() {
 
         requestThreadExecutor = Executors.newSingleThreadExecutor();
 
@@ -192,7 +192,7 @@ public class WebServiceModel extends AbstractModel {
 
                     // Create request parameters (these will be echoed back by the example API)
                     DefaultController dc = new DefaultController();
-                    MESSAGE = dc.getMessage();
+                    MESSAGE = "Hello World";
 
                     // Write parameters to request body
 

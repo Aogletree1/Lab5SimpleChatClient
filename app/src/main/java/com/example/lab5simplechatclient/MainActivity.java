@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         /* Create Controller and Models */
 
         controller = new DefaultController();
-        WebServiceModel model = new WebServiceModel();
+        ExampleWebServiceModel model = new ExampleWebServiceModel();
 
         /* Register Activity View and Model with Controller */
 
@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         binding.postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = binding.inputField.getText().toString();
+
                 controller.sendPostRequest();
+
             }
         });
 
