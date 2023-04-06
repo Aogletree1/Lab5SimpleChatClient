@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         binding.postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String message = binding.inputField.getText().toString();
+                controller.setMessage(message);
                 controller.sendPostRequest();
 
             }
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         binding.clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = binding.inputField.getText().toString();
                 controller.sendPostRequest();
             }
         });

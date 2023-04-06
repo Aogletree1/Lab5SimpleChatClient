@@ -5,6 +5,9 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.lab5simplechatclient.AbstractModel;
+import com.example.lab5simplechatclient.DefaultController;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -22,18 +25,18 @@ public class ExampleWebServiceModel extends AbstractModel {
 
     private static final String TAG = "ExampleWebServiceModel";
 
-    private static final String GET_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/";
-    private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
+    private static final String GET_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/board";
+    private static final String POST_URL = "https://testbed.jaysnellen.com:8443/SimpleChat/";
 
 
     private MutableLiveData<JSONObject> jsonData;
 
     private String outputText;
-    private static final String USERNAME = "Austin Ogletree";
+    private static final String USERNAME = "Austin Ogletree: ";
     private String MESSAGE;
 
     private final ExecutorService requestThreadExecutor;
-    private final Runnable httpGetRequestThread, httpPostRequestThread;
+    private final Runnable httpGetRequestThread, httpPostRequestThread, httpClearRequestThread;
     private Future<?> pending;
 
     public ExampleWebServiceModel() {
@@ -80,12 +83,33 @@ public class ExampleWebServiceModel extends AbstractModel {
 
         };
 
+        httpClearRequestThread = new Runnable() {
+
+            @Override
+            public void run() {
+
+                /* If a previous request is still pending, cancel it */
+
+                if (pending != null) { pending.cancel(true); }
+
+                /* Begin new request now, but don't wait for it */
+
+                try {
+                    pending = requestThreadExecutor.submit(new HTTPRequestTask("CLEAR", POST_URL));
+                }
+                catch (Exception e) { Log.e(TAG, " Exception: ", e); }
+
+            }
+
+        };
+
     }
 
     public void initDefault() {
 
         try{
-            setOutputText("Testing initDefault");
+            String messageBoard;
+            httpGetRequestThread.run();
 
                 }
           catch (Exception e) {e.printStackTrace(); }
@@ -192,7 +216,8 @@ public class ExampleWebServiceModel extends AbstractModel {
 
                     // Create request parameters (these will be echoed back by the example API)
                     DefaultController dc = new DefaultController();
-                    MESSAGE = "Hello World";
+                    MESSAGE = USERNAME + dc.getMessage();
+
 
                     // Write parameters to request body
 
@@ -201,6 +226,12 @@ public class ExampleWebServiceModel extends AbstractModel {
                     out.flush();
                     out.close();
 
+                }
+
+                if (method.equals("CLEAR") ) {
+
+                    conn.setRequestMethod("DELETE");
+                    int responseCode = conn.getResponseCode();
                 }
 
                 /* Send Request */

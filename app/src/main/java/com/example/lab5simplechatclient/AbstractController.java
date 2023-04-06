@@ -1,5 +1,8 @@
 package com.example.lab5simplechatclient;
 
+import com.example.lab5simplechatclient.AbstractModel;
+import com.example.lab5simplechatclient.AbstractView;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;

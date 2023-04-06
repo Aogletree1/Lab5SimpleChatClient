@@ -2,6 +2,9 @@ package com.example.lab5simplechatclient;
 
 import android.util.Log;
 
+import com.example.lab5simplechatclient.AbstractModel;
+import com.example.lab5simplechatclient.DefaultController;
+
 public class DefaultModel extends AbstractModel {
 
     public static final String TAG = "DefaultModel";
