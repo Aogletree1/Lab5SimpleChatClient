@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Lab 5 Simple Chat Client</string>
+    <string name="postBtn">Post</string>
+    <string name="clearBtn">Clear</string>
+    <string name="inputField">Input Field</string>
+</resources>
